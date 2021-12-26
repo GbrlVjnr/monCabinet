@@ -1,0 +1,16 @@
+{% if entry_list %}
+    <ul>
+        {% for entry in entry_list %}
+            <li>
+                ID: {{ entry.id }} || Date: {{ entry.date }} || Libellé: {{ entry.label }} || Montant: {{ entry.amount }} €
+                {% for distribution in distributions %}
+                    {% if distribution.entry.id == entry.id %}
+                        || {{ distribution.account.full_name }}:  {{ distribution.amount }} €
+                    {% endif %}
+                {% endfor %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+<p> Aucune entrée à afficher.</p>
+{% endif %} 
