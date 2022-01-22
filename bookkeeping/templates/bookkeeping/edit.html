@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section>
+    <ul>
+        <li> {{ transaction.date }} </li>
+        <li> {{ transaction.label }} </li>
+        <li> {{ transaction.amount }} €</li>
+    </ul>
+</section>
+
+<section>
+    <h3>Répartition</h3>
+</section>
+<section>
+    <ul>
+        <li>Loyers</li>
+        <li>Au sein de la VAR</li>
+        <li>Manuelle:
+            <ul>
+                <li>Gabriel VEJNAR: </li>
+                <li>Guillaume ANTOURVILLE:</li>
+                <li>Soraya NOUAR:</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section>
+    <button type="button"><a class="button-link" href="{% url 'index' %}">Enregistrer les modifications</a></button>
+    <button type="button"><a class="button-link" href="{% url 'index' %}">Retour sans enregistrer</a></button>
+</section>
+
+{% endblock %}

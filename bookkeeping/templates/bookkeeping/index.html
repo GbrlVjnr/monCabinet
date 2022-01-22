@@ -1,15 +1,12 @@
-{% load static %}
+{% extends "base.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'bookkeeping/style.css' %}">
-
+{% block content %}
 {% if entries %}
 <h2>Livre-journal</h2>
 
 <section>
     <h3>Aujourd'hui {{ current_date }}</h3>
 </section>
-
-<div class="main-container">
 
     <section>
         <a href="{% url 'showMonth' 2020 12 %}"><</a>
@@ -94,9 +91,13 @@
                             <td class="entryDate">{{ entry.date }}</td>
                             <td>{{ entry.label }}</td>
                             <td>{{ entry.amount }} €</td>
-                            {% for distribution in entry.distribution_set.all|dictsort:"account.id" %}
-                                <td> {{ distribution.amount }} €</td>
-                            {% endfor %}
+                            {% if entry.distribution_set.all %}
+                                {% for distribution in entry.distribution_set.all|dictsort:"account.id" %}
+                                    <td> {{ distribution.amount }} €</td>
+                                {% endfor %}
+                            {% else %}
+                                <td><a href="{% url 'editEntry' entry.id %}">Éditer</a></td>
+                            {% endif %}
                         </tr>
                     {% endif %}
                 {% endfor %}
@@ -117,12 +118,15 @@
     </section>
 
     <section>
-        <button type="button"><a class="button-link">Télécharger les données bancaires</a></button>
+        <button type="button"><a class="button-link" href="{% url 'importTransactions' %}">Télécharger les données bancaires</a></button>
         <button type="submit">Éditer les factures du mois</button>
     </section>
-    
-</div>
 
 {% else %}
-<p> Aucune entrée à afficher.</p>
-{% endif %} 
+<h1> Pas de données disponibles.</h1>
+<section>
+    <button type="button"><a class="button-link" href="{% url 'index' %}">Retour</a></button>
+</section>
+{% endif %}
+
+{% endblock %}

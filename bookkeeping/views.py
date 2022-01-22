@@ -2,6 +2,7 @@ from django.http.response import Http404
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.db.models import Sum
+from woob.capabilities.bank.base import AccountNotFound
 
 from .models import Distribution, Entry
 
@@ -72,6 +73,55 @@ def show_month(request, year, month):
                
     return render(request, 'bookkeeping/index.html', context)
 
+
+def importBankData(request):
+    from woob.core import Woob
+    from woob.capabilities.bank import CapBank
+    
+    try:
+        
+        w = Woob()
+        w.load_backends(CapBank)    
+
+        bank_accounts = list(w.iter_accounts())
+        all_transactions = w.iter_history(bank_accounts[0])
+
+        def isNew(transaction):
+
+            last_entry = Entry.objects.latest('date')
+
+            if transaction.date >= last_entry.date and abs(transaction.amount) != last_entry.amount:
+                return True
+            else:
+                return False
+      
+        transactions_to_import = filter(isNew, all_transactions)
+
+        transactions_counter = 0
+        for transaction in transactions_to_import:
+            if transaction.amount < 0:
+                new_transaction = Entry(type='EXP', date=transaction.date, label=transaction.label, amount=abs(transaction.amount))
+            else:
+                new_transaction = Entry(type='INC', date=transaction.date, label=transaction.label, amount=abs(transaction.amount))
+            new_transaction.save()
+            transactions_counter += 1
+        
+        context = {'message': f"{transactions_counter} transaction(s) importée(s).", 'transactions': transactions_to_import}
+    
+    except AccountNotFound:
+
+        ErrorMessage = "Les données n'ont pas pu être chargées. Veuillez réessayer."
+        context = {'message': ErrorMessage}
+
+    return render(request, 'bookkeeping/import.html', context)
+
+def editEntry(request, entry_id):
+
+    entry = Entry.objects.get(pk=entry_id)
+
+    context = {'transaction': entry}
+    
+    return render(request, 'bookkeeping/edit.html', context)
 
 def entryDetail(request, entry_id):
     try:

@@ -1,0 +1,166 @@
+:root {
+    --cg-blue: #0081a7ff;
+    --verdigris: #00afb9ff;
+    --light-yellow: #fdfcdcff;
+    --peach-puff: #fed9b7ff;
+    --bittersweet: #f07167ff;
+}
+
+* {
+    margin:0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--light-yellow);
+    font-family:sans-serif;
+    margin: 20px;
+    padding: 10px;
+}
+
+h1 {
+    text-align: center;
+    margin: 15px;
+}
+
+h2 {
+    background-color: black;
+    color: white;
+    padding: 10px;
+}
+
+.main-container {
+    width: 100%;
+    border: 2px solid black;
+    border-collapse: collapse;
+    box-shadow: 2px 5px 0 black;
+    padding: 3px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+td {
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.livre-journal {
+    align-items: center;
+    border: 2px solid black;
+    border-collapse: collapse;
+    box-shadow: 2px 5px 0 black;
+    margin: 10px;
+}
+
+button {
+    background-color: var(--cg-blue);
+    color: white;
+    border: 2px solid black;
+    border-collapse: collapse;
+    box-shadow: 2px 5px 0 black;
+    padding: 12px;
+    text-align: center;
+}
+
+.button-link {
+    color: white;
+}
+
+.button-month {
+    width: 7%;
+    background-color: var(--light-yellow);
+    color: var(--cg-blue);
+    border: 2px solid var(--cg-blue);
+    border-collapse: collapse;
+    box-shadow: 2px 5px var(--cg-blue);
+}
+
+.button-action {
+    font-size: x-small;
+    padding: 2px;
+    color: var(--bittersweet);
+    background-color: var(--light-yellow);
+    border: 1px solid var(--bittersweet);
+    border-collapse: collapse;
+    box-shadow: 1px 2px var(--bittersweet);
+}
+
+.active {
+    background-color: var(--cg-blue);
+    color: white;
+    border: 2px solid black;
+    border-collapse: collapse;
+    box-shadow: 2px 5px black;
+}
+
+.disabled {
+    opacity: 60%;
+}
+
+thead {
+    text-align: center;
+    font-weight: 400;
+    background-color: var(--cg-blue);
+    color: white;
+}
+
+tbody {
+    font-size: smaller;
+}
+
+.labels {
+    background-color: var(--verdigris);
+    color: white;
+    font-size:x-small
+}
+
+.bankLabels {
+    font-size: xx-small;
+}
+
+.bankAmounts {
+    text-align: right;
+    white-space: nowrap;
+    
+}
+
+.entryLine:hover {
+    background-color: yellowgreen;
+}
+
+.entryDate {
+    background-color: var(--peach-puff);
+}
+
+.entryLabel {
+    white-space: nowrap;
+}
+
+tfoot {
+    background-color: var(--bittersweet);
+    font-weight: 600;
+}
+
+section {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+    padding: 10px;
+}
+
+input {
+    border: none;
+    background-color: var(--light-yellow);
+}
+
+.input-label {
+    font-size: xx-small;
+}
+
+.input-amount {
+    font-size: small;
+}
+
