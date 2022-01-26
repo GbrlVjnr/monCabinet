@@ -1,35 +1,70 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "bookkeeping/base.html" %} {% block content %} {% if error_message %}
 
 <section>
-    <ul>
-        <li> {{ transaction.date }} </li>
-        <li> {{ transaction.label }} </li>
-        <li> {{ transaction.amount }} €</li>
-    </ul>
+  <h1>{{ error_message }}</h1>
 </section>
 
-<section>
-    <h3>Répartition</h3>
-</section>
-<section>
-    <ul>
-        <li>Loyers</li>
-        <li>Au sein de la VAR</li>
-        <li>Manuelle:
-            <ul>
-                <li>Gabriel VEJNAR: </li>
-                <li>Guillaume ANTOURVILLE:</li>
-                <li>Soraya NOUAR:</li>
-            </ul>
-        </li>
-    </ul>
-</section>
+{% else %}
+
+<h2>{{ title }}</h2>
 
 <section>
-    <button type="button"><a class="button-link" href="{% url 'index' %}">Enregistrer les modifications</a></button>
-    <button type="button"><a class="button-link" href="{% url 'index' %}">Retour sans enregistrer</a></button>
+  <form action="{% url 'editEntry' transaction.id %}" method="post">
+    {% csrf_token %}
+    <p class="disabled">Date: {{ transaction.date }}</p>
+    <label>Libellé:</label>
+    <input
+      type="text"
+      size="100"
+      value="{{ transaction.label }}"
+      id="label"
+      name="label"
+    />
+    <legend>
+      Modifiez le libellé tel qu'il apparaîtra dans le livre-journal et sur les
+      factures
+    </legend>
+    <p class="disabled">Amount: {{ transaction.amount }} €</p>
+
+    <section>
+      <h3>Répartition</h3>
+    </section>
+
+    <div class="editInputs">
+      <input type="radio" value="rent" name="distribution" />
+      <label for="rent">Loyer</label>
+
+      <br />
+
+      <input type="radio" value="tenants" name="distribution" />
+      <label for="tenants">La VAR</label>
+
+      <br />
+
+      <input type="radio" value="custom" name="distribution" checked />
+      <label for="custom">Manuelle :</label>
+
+      <br />
+
+      {% for account in accounts %}
+
+      <label for="{{ account.id }}">{{ account.full_name }}</label>
+      <input type="number" step="0.01" size="6" name="{{ account.id }}" />
+
+      <br />
+
+      {% endfor %}
+    </div>
+
+    <section>
+      <button type="submit">Enregistrer les modifications</button>
+      <button type="button">
+        <a class="button-link" href="{% url 'index' %}"
+          >Retour sans enregistrer</a
+        >
+      </button>
+    </section>
+  </form>
 </section>
 
-{% endblock %}
+{% endif %} {% endblock %}

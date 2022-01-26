@@ -7,6 +7,6 @@ urlpatterns = [
     path('<int:year>/<int:month>/', views.show_month, name='showMonth'),
     path('import/', views.importBankData, name='importTransactions'),
     path('edit/<int:entry_id>/', views.editEntry, name='editEntry'),
-    path('<int:entry_id>/', views.entryDetail, name='entryDetail'),
-    path('accounts/', views.accountsList, name='accounts')
+    path('invoices/<int:year>/<int:month>/', views.invoices, name='invoices'),
+    path('pdfinvoice/<int:year>/<int:month>/<int:accountid>/', views.pdf_invoice, name='invoicePDF'),
 ]

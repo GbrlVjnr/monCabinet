@@ -1,132 +1,170 @@
-{% extends "base.html" %}
+{% extends "bookkeeping/base.html" %} {% block content %} {% if entries %}
+<h2>{{ title }}</h2>
 
-{% block content %}
-{% if entries %}
-<h2>Livre-journal</h2>
 
 <section>
-    <h3>Aujourd'hui {{ current_date }}</h3>
+  <h3>Aujourd'hui {{ current_date }}</h3>
 </section>
 
-    <section>
-        <a href="{% url 'showMonth' 2020 12 %}"><</a>
-        <h3>{{ showed_month|date:"Y" }}</h3>
-        <a href="{% url 'showMonth' 2021 1 %}">></a>
-    </section>
+<section>
+  <a href="{% url 'showMonth' 2020 12 %}"><</a>
+  <h3>{{ showed_month|date:"Y" }}</h3>
+  <a href="{% url 'showMonth' 2021 1 %}">></a>
+</section>
 
-    <section>
-        <button type="button"><a class="button-link" href="{% url 'showMonth' showed_month.year 1 %}">Janvier</a></button>
-        <button type="button"><a class="button-link" href="{% url 'showMonth' showed_month.year 2 %}">Février</a></button>
-        <button type="button"><a class="button-link" href="{% url 'showMonth' showed_month.year 3 %}">Mars</a></button>
-        <button type="button"><a class="button-link" href="{% url 'showMonth' showed_month.year 4 %}">Avril</a></button>
-        <button type="button"><a class="button-link" href="{% url 'showMonth' showed_month.year 5 %}">Mai</a></button>
-        <button type="button"><a class="button-link" href="{% url 'showMonth' showed_month.year 6 %}">Juin</a></button>
-        <button type="button"><a class="button-link" href="{% url 'showMonth' showed_month.year 7 %}">Juillet</a></button>
-        <button type="button"><a class="button-link" href="{% url 'showMonth' showed_month.year 8 %}">Août</a></button>
-        <button type="button"><a class="button-link" href="{% url 'showMonth' showed_month.year 9 %}">Septembre</a></button>
-        <button type="button"><a class="button-link" href="{% url 'showMonth' showed_month.year 10 %}">Octobre</a></button>
-        <button type="button"><a class="button-link" href="{% url 'showMonth' showed_month.year 11 %}">Novembre</a></button>
-        <button type="button"><a class="button-link" href="{% url 'showMonth' showed_month.year 12 %}">Décembre</a></button>
-    </section>
+<section>
+  <button type="button">
+    <a class="button-link" href="{% url 'showMonth' showed_month.year 1 %}"
+      >Janvier</a
+    >
+  </button>
+  <button type="button">
+    <a class="button-link" href="{% url 'showMonth' showed_month.year 2 %}"
+      >Février</a
+    >
+  </button>
+  <button type="button">
+    <a class="button-link" href="{% url 'showMonth' showed_month.year 3 %}"
+      >Mars</a
+    >
+  </button>
+  <button type="button">
+    <a class="button-link" href="{% url 'showMonth' showed_month.year 4 %}"
+      >Avril</a
+    >
+  </button>
+  <button type="button">
+    <a class="button-link" href="{% url 'showMonth' showed_month.year 5 %}"
+      >Mai</a
+    >
+  </button>
+  <button type="button">
+    <a class="button-link" href="{% url 'showMonth' showed_month.year 6 %}"
+      >Juin</a
+    >
+  </button>
+  <button type="button">
+    <a class="button-link" href="{% url 'showMonth' showed_month.year 7 %}"
+      >Juillet</a
+    >
+  </button>
+  <button type="button">
+    <a class="button-link" href="{% url 'showMonth' showed_month.year 8 %}"
+      >Août</a
+    >
+  </button>
+  <button type="button">
+    <a class="button-link" href="{% url 'showMonth' showed_month.year 9 %}"
+      >Septembre</a
+    >
+  </button>
+  <button type="button">
+    <a class="button-link" href="{% url 'showMonth' showed_month.year 10 %}"
+      >Octobre</a
+    >
+  </button>
+  <button type="button">
+    <a class="button-link" href="{% url 'showMonth' showed_month.year 11 %}"
+      >Novembre</a
+    >
+  </button>
+  <button type="button">
+    <a class="button-link" href="{% url 'showMonth' showed_month.year 12 %}"
+      >Décembre</a
+    >
+  </button>
+</section>
 
+<section>
+  <h3>Mois de {{ showed_month|date:"F Y" }}</h3>
+</section>
 
-    <section>
-        <h3>Mois de {{ showed_month|date:"F Y" }} </h3>
-    </section>
+<section>
+  <table class="livre-journal">
+    <thead>
+      <tr>
+        <td colspan="3">Recettes</td>
+      </tr>
+      <tr class="labels">
+        <td>Date</td>
+        <td>Libellé</td>
+        <td>Banque</td>
+      </tr>
+    </thead>
 
-    <section>
-        <table class="livre-journal">
-            <thead>
-                <tr>
-                    <td colspan="3">Recettes</td>
-                </tr>
-                <tr class="labels">
-                    <td>Date</td>
-                    <td>Libellé</td>
-                    <td>Banque</td>
-                </tr>
-            </thead>
-        
-            <tbody>
-                {% for entry in entries %}
-                    {% if entry.type == "INC" %}
-                        <tr class=entryLine>
-                            <td class="entryDate">{{ entry.date }}</td>
-                            <td>{{ entry.label }}</td>
-                            <td>{{ entry.amount }} €</td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2">Total</td>
-                    <td>
-                        {{ monthly_income.amount__sum|floatformat:2 }} €
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-        
-        <table class="livre-journal">
-            <thead>
-                <tr>
-                    <td colspan="3">Dépenses</td>
-                    <td colspan="{{ accounts_list|length }}">Répartition</td>
-                </tr>
-                <tr class="labels">
-                    <td>Date</td>
-                    <td>Libellé</td>
-                    <td>Banque</td>
-                    {% for account in accounts_list %}
-                        <td> {{ account.full_name }} </td>
-                    {% endfor %}
-                </tr>
-            </thead>
-        
-            <tbody>
-                {% for entry in entries %}
-                    {% if entry.type == "EXP" %}
-                        <tr class=entryLine>
-                            <td class="entryDate">{{ entry.date }}</td>
-                            <td>{{ entry.label }}</td>
-                            <td>{{ entry.amount }} €</td>
-                            {% if entry.distribution_set.all %}
-                                {% for distribution in entry.distribution_set.all|dictsort:"account.id" %}
-                                    <td> {{ distribution.amount }} €</td>
-                                {% endfor %}
-                            {% else %}
-                                <td><a href="{% url 'editEntry' entry.id %}">Éditer</a></td>
-                            {% endif %}
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2">Total</td>
-                    <td>
-                        {{ monthly_expense.amount__sum|floatformat:2 }} €
-                    </td>
-                    {% for account, total in monthly_accounts_totals.items %}
-                        <td> {{ total }} €</td>
-                    {% endfor %}
-                </tr>
-            </tfoot>
-        </table>        
+    <tbody>
+      {% for entry in entries %} {% if entry.type == "INC" %}
+      <tr class="entryLine">
+        <td class="entryDate">{{ entry.date }}</td>
+        <td>{{ entry.label }}</td>
+        <td>{{ entry.amount }} €</td>
+      </tr>
+      {% endif %} {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2">Total</td>
+        <td>{{ monthly_income.amount__sum|floatformat:2 }} €</td>
+      </tr>
+    </tfoot>
+  </table>
 
-    </section>
+  <table class="livre-journal">
+    <thead>
+      <tr>
+        <td colspan="3">Dépenses</td>
+        <td colspan="{{ accounts_list|length }}">Répartition</td>
+      </tr>
+      <tr class="labels">
+        <td>Date</td>
+        <td>Libellé</td>
+        <td>Banque</td>
+        {% for account in accounts_list %}
+        <td>{{ account.full_name }}</td>
+        {% endfor %}
+      </tr>
+    </thead>
 
-    <section>
-        <button type="button"><a class="button-link" href="{% url 'importTransactions' %}">Télécharger les données bancaires</a></button>
-        <button type="submit">Éditer les factures du mois</button>
-    </section>
+    <tbody>
+      {% for entry in entries %} {% if entry.type == "EXP" %}
+      <tr class="entryLine">
+        <td class="entryDate">{{ entry.date }}</td>
+        <td>{{ entry.label }}</td>
+        <td>{{ entry.amount }} €</td>
+        {% if entry.distribution_set.all %} {% for distribution in entry.distribution_set.all|dictsort:"account.id" %}
+        <td>{{ distribution.amount }} €</td>
+        {% endfor %} {% else %}
+        <td><a href="{% url 'editEntry' entry.id %}">Éditer</a></td>
+        {% endif %}
+      </tr>
+      {% endif %} {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2">Total</td>
+        <td>{{ monthly_expense.amount__sum|floatformat:2 }} €</td>
+        {% for account, total in monthly_accounts_totals.items %}
+        <td>{{ total }} €</td>
+        {% endfor %}
+      </tr>
+    </tfoot>
+  </table>
+</section>
+
+<section>
+  <button type="button">
+    <a class="button-link" href="{% url 'importTransactions' %}">Télécharger les nouvelles données bancaires</a>
+  </button>
+  <button type="button">
+      <a class="button-link" href="{% url 'invoices' showed_month.year showed_month.month %}">Facturation</a>
+    </button>
+</section>
 
 {% else %}
-<h1> Pas de données disponibles.</h1>
+<h1>Pas de données disponibles.</h1>
 <section>
-    <button type="button"><a class="button-link" href="{% url 'index' %}">Retour</a></button>
+  <button type="button">
+    <a class="button-link" href="{% url 'index' %}">Retour</a>
+  </button>
 </section>
-{% endif %}
-
-{% endblock %}
+{% endif %} {% endblock %}

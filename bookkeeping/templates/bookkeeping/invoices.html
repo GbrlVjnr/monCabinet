@@ -1,0 +1,67 @@
+{% extends "bookkeeping/base.html" %} 
+
+{% block content %} 
+
+{% if error_message %}
+
+<section>
+  <h1>{{ error_message }}</h1>
+</section>
+
+{% else %}
+
+<h2>{{ title }} {{ showed_month|date:"F Y"|capfirst }}</h2>
+
+<br>
+
+{% for invoice in invoices %}
+
+<div class="secondary-container">
+    <section>
+
+        <div class="invoice-info">
+            <h3> {{ invoice.account.full_name }} </h3>
+
+            <p>Adresse d'expédition: {{ invoice.account.email }} </p>
+            <p>Adresse de facturation: 53, rue du Four - 75006 Paris</p>
+            <p>Date de facturation : {{ current_date }} </p>
+        </div>
+    
+        <table>
+            <thead>
+                <tr>
+                    <th class="invoice-header" colspan="2">À facturer:</th>
+                </tr>
+            </thead>
+            {% for item in invoice.expenses %}
+                <tr>
+                    <td class="invoice_label"> {{ item.entry.label }} </td>
+                    <td class="invoice_amount"> {{ item.amount }} €</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td class="invoice_amount invoice_total">Total</td>
+                <td class="invoice_amount invoice_total"> {{ invoice.total.amount__sum|floatformat:2 }} €</td>
+            </tr>
+        </table>
+    
+    </section>
+    
+    <section>
+        <button type="button">
+            <a class="button-link" href=" {% url 'invoicePDF' showed_month.year showed_month.month invoice.account.id %} ">Visualiser la facture</a>
+          </button>
+          <button type="button">
+            <a class="button-link" href="">Expédier</a>
+        </button>
+    </section>
+</div>
+
+<br>
+
+{% endfor %}
+
+
+{% endif %} 
+
+{% endblock %}

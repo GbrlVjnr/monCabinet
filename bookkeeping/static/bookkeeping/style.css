@@ -29,12 +29,33 @@ h2 {
     padding: 10px;
 }
 
+h3 {
+    padding: 10px;
+}
+
 .main-container {
+    text-align: center;
     width: 100%;
     border: 2px solid black;
     border-collapse: collapse;
     box-shadow: 2px 5px 0 black;
     padding: 3px;
+}
+
+.secondary-container {
+    width: 58%;
+    background-color: var(--peach-puff);
+    border: 1px solid black;
+    border-collapse: collapse;
+    box-shadow: 1px 3px 0 black;
+    padding: 2px;
+    margin: auto;
+}
+
+.invoice-info {
+    text-align: left;
+    margin: 10px;
+    line-height: 40px;
 }
 
 a {
@@ -53,6 +74,20 @@ td {
     border-collapse: collapse;
     box-shadow: 2px 5px 0 black;
     margin: 10px;
+}
+
+.invoice_label {
+    border: none;
+    text-align: start;
+}
+
+.invoice_amount {
+    border: none;
+    text-align: end;
+}
+
+.invoice_total {
+   font-weight: bold;
 }
 
 button {
@@ -100,10 +135,17 @@ button {
     opacity: 60%;
 }
 
-thead {
+.livre-journal-head {
     text-align: center;
     font-weight: 400;
     background-color: var(--cg-blue);
+    color: white;
+}
+
+.invoice_header {
+    text-align: center;
+    font-weight: 200;
+    background-color: none;
     color: white;
 }
 
@@ -153,14 +195,19 @@ section {
 
 input {
     border: none;
-    background-color: var(--light-yellow);
+    background-color: var(--peach-puff);
+    margin: .4rem;
 }
 
 .input-label {
-    font-size: xx-small;
+    font-size: small;
 }
 
 .input-amount {
     font-size: small;
+}
+
+.editInputs {
+    background-color: var(--peach-puff);
 }
 

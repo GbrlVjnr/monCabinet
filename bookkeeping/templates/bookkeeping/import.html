@@ -1,21 +1,24 @@
-{% extends "base.html" %}
+{% extends "bookkeeping/base.html" %} {% block content %}
 
-{% block content %}
+<h2>{{ title }}</h2>
 
-<h1>{{ message }}</h1>
+<h3>{{ message }}</h3>
 
 {% if transactions %}
+
 <ul>
-    {% for transaction in transactions %}
-    <li> {{ transaction.date }} </li>
-    <li> {{ transaction.label }} </li>
-    <li> {{ transaction.amount }} </li>
-    {% endfor %}
+  {% for transaction in transactions %}
+  <li>{{ transaction.date }}</li>
+  <li>{{ transaction.label }}</li>
+  <li>{{ transaction.amount }}</li>
+  {% endfor %}
 </ul>
 {% endif %}
 
 <section>
-    <button type="button"><a class="button-link" href="{% url 'index' %}">Retour</a></button>
+  <button type="button">
+    <a class="button-link" href="{% url 'index' %}">Retour</a>
+  </button>
 </section>
 
 {% endblock %}
