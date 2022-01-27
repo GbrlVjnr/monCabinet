@@ -6,9 +6,13 @@ import datetime
 
 from django.db.models.fields import EmailField
 
-
 class Account(models.Model):
+    GENDERS = [
+        ('M', 'male'),
+        ('F', 'female')
+    ]
     full_name = models.CharField(max_length=50)
+    gender = models.CharField(max_length=1, choices=GENDERS, default='M')
     email = models.EmailField(max_length=254, null=True)
     contractType = models.TextChoices(
         'contractType', 'tenant sublet legal unspecified')
@@ -21,20 +25,26 @@ class Account(models.Model):
     def __str__(self):
         return self.full_name
 
-
 class Entry(models.Model):
     ENTRY_TYPES = [
         ('INC', 'income'),
         ('EXP', 'expense'),
     ]
+    VAT_RATES = [
+        ('NOR', 'normal(20%)'),
+        ('MID', 'middle(10%)'),
+        ('RED', 'reduced(5,5%)'),
+        ('SPE', 'special(2,1%)'),
+        ('ND', 'undetermined'),
+    ]
     label = models.CharField(max_length=300)
     amount = models.FloatField(default=0.00)
     type = models.CharField(max_length=3, choices=ENTRY_TYPES)
+    VAT_rate = models.CharField(max_length=3, choices=VAT_RATES, default='ND')
     date = models.DateField(default=datetime.datetime.now())
 
     def __str__(self):
         return self.label
-
 
 class Distribution(models.Model):
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE)

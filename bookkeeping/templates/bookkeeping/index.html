@@ -1,9 +1,13 @@
-{% extends "bookkeeping/base.html" %} {% block content %} {% if entries %}
+{% extends "bookkeeping/base.html" %} 
+
+{% block content %} 
+
+{% if entries %}
 <h2>{{ title }}</h2>
 
 
 <section>
-  <h3>Aujourd'hui {{ current_date }}</h3>
+  <h3>Nous sommes le {{ current_date }}.</h3>
 </section>
 
 <section>
@@ -83,7 +87,7 @@
   <table class="livre-journal">
     <thead>
       <tr>
-        <td colspan="3">Recettes</td>
+        <td class="livre-journal-head" colspan="3">Recettes</td>
       </tr>
       <tr class="labels">
         <td>Date</td>
@@ -112,8 +116,8 @@
   <table class="livre-journal">
     <thead>
       <tr>
-        <td colspan="3">Dépenses</td>
-        <td colspan="{{ accounts_list|length }}">Répartition</td>
+        <td class="livre-journal-head" colspan="3">Dépenses</td>
+        <td class="livre-journal-head" colspan="{{ accounts_list|length }}">Répartition</td>
       </tr>
       <tr class="labels">
         <td>Date</td>
@@ -126,14 +130,17 @@
     </thead>
 
     <tbody>
-      {% for entry in entries %} {% if entry.type == "EXP" %}
-      <tr class="entryLine">
-        <td class="entryDate">{{ entry.date }}</td>
-        <td>{{ entry.label }}</td>
-        <td>{{ entry.amount }} €</td>
-        {% if entry.distribution_set.all %} {% for distribution in entry.distribution_set.all|dictsort:"account.id" %}
-        <td>{{ distribution.amount }} €</td>
-        {% endfor %} {% else %}
+      {% for entry in entries %} 
+        {% if entry.type == "EXP" %}
+          <tr class="entryLine">
+            <td class="entryDate">{{ entry.date }}</td>
+            <td>{{ entry.label }}</td>
+            <td>{{ entry.amount }} €</td>
+        {% if entry.distribution_set.all %} 
+          {% for distribution in entry.distribution_set.all|dictsort:"account.id" %}
+          <td>{{ distribution.amount }} €</td>
+          {% endfor %}
+        {% else %}
         <td><a href="{% url 'editEntry' entry.id %}">Éditer</a></td>
         {% endif %}
       </tr>

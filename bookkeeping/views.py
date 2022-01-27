@@ -1,9 +1,12 @@
 # Imports from Django's librairies
 from django.http.response import Http404
 from django.shortcuts import redirect, render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Sum
 from django.template.loader import get_template
+from django.conf import settings
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 # Woob imports (module used to collect bank data)
 from woob.capabilities.bank.base import AccountNotFound
@@ -75,6 +78,30 @@ def month_data(year, month):
         'accounts_totals': {key: monthly_accounts_totals[key] for key in sorted(monthly_accounts_totals, key=account_id)}
         }
 
+def loginPage(request):
+
+    context = {
+        'title': "Connexion"
+    }
+
+    if request.method == "POST":
+
+        username = request.POST.get('username', False)
+        password = request.POST.get('password', False)
+        user = authenticate(username=username, password=password)
+        if user is not None and user.is_active:
+            login(request, user)
+            return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+
+    return render(request, 'bookkeeping/login.html', context)
+
+def unlogUser(request):
+
+    logout(request)
+
+    return HttpResponseRedirect(settings.LOGIN_URL)
+
+@login_required
 def index(request):
 
     last_entry = Entry.objects.latest('date')
@@ -82,19 +109,26 @@ def index(request):
     return show_month(request, last_entry.date.year, last_entry.date.month)
 
 # Return a view that displays the specified month (/YYYY/m/)
+@login_required
 def show_month(request, year, month):
 
-    context = {'showed_month': date(year, month, 1), 'title': "Livre-journal",
-               'current_date': datetime.now().date,
-               'entries': month_data(year, month)['entries'],
-               'accounts_list': month_data(year, month)['accounts'],
-               'monthly_income': month_data(year, month)['total_income'],
-               'monthly_expense': month_data(year, month)['total_expenses'],
-               'monthly_accounts_totals': month_data(year,month)['accounts_totals']}
+    user = request.user
+
+    context = {
+        'user': user,
+        'showed_month': date(year, month, 1),
+        'title': "Livre-journal",
+        'current_date': datetime.now().date,
+        'entries': month_data(year, month)['entries'],
+        'accounts_list': month_data(year, month)['accounts'],
+        'monthly_income': month_data(year, month)['total_income'],
+        'monthly_expense': month_data(year, month)['total_expenses'],
+        'monthly_accounts_totals': month_data(year,month)['accounts_totals']}
 
     return render(request, 'bookkeeping/index.html', context)
 
 # Returns new data from the bank account
+@login_required
 def importBankData(request):
     from woob.core import Woob
     from woob.capabilities.bank import CapBank
@@ -142,6 +176,7 @@ def importBankData(request):
     return render(request, 'bookkeeping/import.html', context)
 
 # Allows editing an entry
+@login_required
 def editEntry(request, entry_id):
 
     entry = Entry.objects.get(pk=entry_id)
@@ -212,6 +247,7 @@ def editEntry(request, entry_id):
     return render(request, 'bookkeeping/edit.html', context)
 
 # Returns a view displaying a preview of all invoices for a specific month
+@login_required
 def invoices(request, year, month):
 
     accounts = month_data(year, month)['accounts']
@@ -233,6 +269,7 @@ def invoices(request, year, month):
     return render(request, 'bookkeeping/invoices.html', context)
 
 # Loads a PDF file for a specific invoice
+@login_required
 def pdf_invoice(request, year, month, accountid):
 
     # Collects the data for the invoice view
@@ -251,6 +288,6 @@ def pdf_invoice(request, year, month, accountid):
     template = get_template('bookkeeping/pdf_template.html')
     html = template.render(data)
     result = BytesIO()
-    pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+    pisa.pisaDocument(BytesIO(html.encode("utf-8")), result)
     
     return HttpResponse(result.getvalue(), content_type='application/pdf')

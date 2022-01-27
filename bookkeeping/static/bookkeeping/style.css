@@ -33,6 +33,11 @@ h3 {
     padding: 10px;
 }
 
+.user_status {
+    text-align: right;
+    margin: 10px;
+}
+
 .main-container {
     text-align: center;
     width: 100%;

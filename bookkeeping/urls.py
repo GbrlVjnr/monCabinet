@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('login/', views.loginPage, name='login'),
+    path('unlog/', views.unlogUser, name='deconnect'),
     path('<int:year>/<int:month>/', views.show_month, name='showMonth'),
     path('import/', views.importBankData, name='importTransactions'),
     path('edit/<int:entry_id>/', views.editEntry, name='editEntry'),

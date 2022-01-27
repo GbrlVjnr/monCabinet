@@ -1,0 +1,17 @@
+{% extends "bookkeeping/base.html" %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<section>
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <label>Nom d'utilisateur: </label>
+        <input type="text" name="username" placeholder="Utilisateur"></br>
+        <label>Mot de passe: </label>
+        <input type="password" name="password" placeholder="Mot de passe"></br>
+        <button type="submit" value="login">Connexion</button>
+    </form>
+</section>
+{% endblock %}
