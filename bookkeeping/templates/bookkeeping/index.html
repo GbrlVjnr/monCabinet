@@ -101,7 +101,7 @@
       <tr class="entryLine">
         <td class="entryDate">{{ entry.date }}</td>
         <td>{{ entry.label }}</td>
-        <td>{{ entry.amount }} €</td>
+        <td>{{ entry.amount|floatformat:2 }} €</td>
       </tr>
       {% endif %} {% endfor %}
     </tbody>
@@ -118,6 +118,7 @@
       <tr>
         <td class="livre-journal-head" colspan="3">Dépenses</td>
         <td class="livre-journal-head" colspan="{{ accounts_list|length }}">Répartition</td>
+        <td class="livre-journal-head" colspan="3">Action</td>
       </tr>
       <tr class="labels">
         <td>Date</td>
@@ -126,6 +127,7 @@
         {% for account in accounts_list %}
         <td>{{ account.full_name }}</td>
         {% endfor %}
+        <td></td>
       </tr>
     </thead>
 
@@ -135,11 +137,12 @@
           <tr class="entryLine">
             <td class="entryDate">{{ entry.date }}</td>
             <td>{{ entry.label }}</td>
-            <td>{{ entry.amount }} €</td>
+            <td>{{ entry.amount|floatformat:2 }} €</td>
         {% if entry.distribution_set.all %} 
           {% for distribution in entry.distribution_set.all|dictsort:"account.id" %}
           <td>{{ distribution.amount }} €</td>
           {% endfor %}
+          <td><a href="{% url 'editEntry' entry.id %}">Éditer</a></td>
         {% else %}
         <td><a href="{% url 'editEntry' entry.id %}">Éditer</a></td>
         {% endif %}
@@ -153,6 +156,7 @@
         {% for account, total in monthly_accounts_totals.items %}
         <td>{{ total }} €</td>
         {% endfor %}
+        <td></td>
       </tr>
     </tfoot>
   </table>

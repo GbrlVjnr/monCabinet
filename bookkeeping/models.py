@@ -35,6 +35,7 @@ class Entry(models.Model):
         ('MID', 'middle(10%)'),
         ('RED', 'reduced(5,5%)'),
         ('SPE', 'special(2,1%)'),
+        ('NUL', 'null'),
         ('ND', 'undetermined'),
     ]
     label = models.CharField(max_length=300)
@@ -43,6 +44,20 @@ class Entry(models.Model):
     VAT_rate = models.CharField(max_length=3, choices=VAT_RATES, default='ND')
     date = models.DateField(default=datetime.datetime.now())
 
+    def VAT_amount(self):
+        if self.VAT_rate == "NOR":
+            return self.amount * 0.2
+        elif self.VAT_rate == "MID":
+            return self.amount * 0.1
+        elif self.VAT_rate == "RED":
+            return self.amount * 0.055
+        elif self.VAT_rate == "SPE":
+            return self.amount * 0.021
+        elif self.VAT_rate == "NUL":
+            return self.amount * 0
+        else:
+            return self.amount * 0
+
     def __str__(self):
         return self.label
 
@@ -50,8 +65,22 @@ class Distribution(models.Model):
     entry = models.ForeignKey(Entry, on_delete=models.CASCADE)
     account = models.ForeignKey(
         Account, on_delete=CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    amount = models.FloatField(default=0.00)
 
+    def VAT_amount(self):
+        if self.entry.VAT_rate == "NOR":
+            return self.amount * 0.2
+        elif self.entry.VAT_rate == "MID":
+            return self.amount * 0.1
+        elif self.entry.VAT_rate == "RED":
+            return self.amount * 0.055
+        elif self.entry.VAT_rate == "SPE":
+            return self.amount * 0.021
+        elif self.entry.VAT_rate == "NUL":
+            return self.amount * 0
+        else:
+            return self.amount * 0
+    
     def __str__(self):
         return f"Account: {self.account.full_name} // Entry: {self.entry.label}"
 

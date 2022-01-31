@@ -7,6 +7,7 @@ from django.template.loader import get_template
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMessage
 
 # Woob imports (module used to collect bank data)
 from woob.capabilities.bank.base import AccountNotFound
@@ -16,7 +17,7 @@ from .models import Account, Distribution, Entry
 
 # Python's modules imports
 from datetime import datetime, date
-from io import BytesIO
+from io import BytesIO, StringIO
 
 from xhtml2pdf import pisa
 
@@ -186,6 +187,7 @@ def editEntry(request, entry_id):
         try:
 
             entry.label = request.POST['label']
+            entry.VAT_rate = request.POST['VAT']
             entry.save()
 
             # Distributes the transaction equally among tenants and creates Distribution equal to 0 for the others
@@ -210,7 +212,7 @@ def editEntry(request, entry_id):
                     if account.contract == "tenant":
                         subrents_amount = accounts.aggregate(Sum('rent'))
                         new_distribution = Distribution(
-                            entry=entry, account=account, amount=(entry.amount - float(subrents_amount['rent__sum']))/3)
+                            entry=entry, account=account, amount=(entry.amount - subrents_amount['rent__sum'])/3)
                         new_distribution.save()
                         print("saved!")
                     else:
@@ -241,8 +243,10 @@ def editEntry(request, entry_id):
 
         accounts = Account.objects.filter(is_active=True)
 
-        context = {'transaction': entry, 'accounts': accounts,
-                   'title': "Éditer une transaction"}
+        context = {
+            'transaction': entry, 
+            'accounts': accounts,
+            'title': "Éditer"}
 
     return render(request, 'bookkeeping/edit.html', context)
 
@@ -291,3 +295,36 @@ def pdf_invoice(request, year, month, accountid):
     pisa.pisaDocument(BytesIO(html.encode("utf-8")), result)
     
     return HttpResponse(result.getvalue(), content_type='application/pdf')
+
+@login_required
+def send_invoice(request, year, month, accountid):
+
+    # Collects the data for the invoice view
+    account = Account.objects.get(pk=accountid)
+    expenses = Distribution.objects.filter(account=account, entry__date__year=year, entry__date__month=month).exclude(amount=0)
+    total = expenses.aggregate(Sum('amount'))
+
+    data = {
+        'account': account,
+        'expenses': expenses,
+        'total': total,
+        'current_date': datetime.now().date,
+    }
+    
+    # PDF rendering
+    template = get_template('bookkeeping/pdf_template.html')
+    html = template.render(data)
+    result = BytesIO()
+    pisa.pisaDocument(BytesIO(html.encode("utf-8")), result)
+    pdf = result.getvalue()
+
+    # Email
+    email = EmailMessage(
+        'TEST EMAIL: Facture',
+        'CECI EST UN TEST: Mon cher Confrère,\n\n Vous trouverez ci-joint la facture pour le mois courant.\n\n Je vous prie de me croire,\n\nVotre bien dévoué,\n\nGabriel Vejnar',
+        to=[account.email],
+    )
+    email.attach('facture.pdf', pdf, 'application/pdf')
+    email.send()
+
+    return redirect('invoices', year=year, month=month)

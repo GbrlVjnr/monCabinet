@@ -32,7 +32,13 @@
         .items-table {
             border: 0.5pt solid black;
             padding: 3pt;
-            font-size: 10pt;
+            font-size: 9pt;
+        }
+
+        .VAT {
+            font-size: 9pt;
+            font-style: italic;
+            text-align: right;
         }
 
         .amount_cell {
@@ -131,6 +137,7 @@
             <tr>
                 <td> {{ expense.entry.label }} </td>
                 <td class="amount_cell"> {{ expense.amount }} euros</td>
+                <td class="VAT">(Dont TVA : {{ expense.VAT_amount|floatformat:2 }} euros)</td>
             </tr>
             {% endfor %}
             <tr class="total_cells">

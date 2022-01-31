@@ -134,10 +134,12 @@ LOGIN_URL = '/bookkeeping/login/'
 
 # Emails
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = 465
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_USER')
+EMAIL_HOST_USER = 'gabriel.vejnar@gmail.com'
+EMAIL_HOST_PASSWORD = 'igfivvlmfuuzyzal'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 RECIPIENT_ADDRESS = env('RECIPIENT_ADDRESS')
+

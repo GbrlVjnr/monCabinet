@@ -27,6 +27,38 @@
     <p class="disabled">Amount: {{ transaction.amount }} €</p>
 
     <section>
+      <h3>T.V.A</h3>
+    </section>
+    <section>
+      <div class="editInputs">
+        <input type="radio" value="NOR" name="VAT" checked/>
+        <label for="NOR">Ordinaire (20%)</label>
+  
+        <br />
+  
+        <input type="radio" value="MID" name="VAT" />
+        <label for="MID">Intermédiaire (10%)</label>
+  
+        <br />
+  
+        <input type="radio" value="RED" name="VAT" />
+        <label for="RED">Réduite (5,5%)</label>
+  
+        <br />
+
+        <input type="radio" value="SPE" name="VAT" />
+        <label for="SPE">Spéciale (2,1%)</label>
+  
+        <br />
+
+        <input type="radio" value="NUL" name="VAT" />
+        <label for="NUL">Non-applicable</label>
+  
+        <br />
+  
+    </section>
+    
+    <section>
       <h3>Répartition</h3>
     </section>
 
