@@ -36,7 +36,7 @@
             {% for item in invoice.expenses %}
                 <tr>
                     <td class="invoice_label"> {{ item.entry.label }} </td>
-                    <td class="invoice_amount"> {{ item.amount }} €</td>
+                    <td class="invoice_amount"> {{ item.amount|floatformat:2 }} €</td>
                 </tr>
             {% endfor %}
             <tr>

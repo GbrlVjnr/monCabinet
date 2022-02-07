@@ -18,7 +18,7 @@ class Account(models.Model):
         'contractType', 'tenant sublet legal unspecified')
     contract = models.CharField(
         max_length=12, choices=contractType.choices, default='unspecified')
-    rent = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    rent = models.FloatField(default=0.00)
     start_date = models.DateField(default=datetime.datetime.now())
     is_active = models.BooleanField(default=True)
 

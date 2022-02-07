@@ -140,7 +140,7 @@
             <td>{{ entry.amount|floatformat:2 }} €</td>
         {% if entry.distribution_set.all %} 
           {% for distribution in entry.distribution_set.all|dictsort:"account.id" %}
-          <td>{{ distribution.amount }} €</td>
+          <td>{{ distribution.amount|floatformat:2 }} €</td>
           {% endfor %}
           <td><a href="{% url 'editEntry' entry.id %}">Éditer</a></td>
         {% else %}
@@ -154,7 +154,7 @@
         <td colspan="2">Total</td>
         <td>{{ monthly_expense.amount__sum|floatformat:2 }} €</td>
         {% for account, total in monthly_accounts_totals.items %}
-        <td>{{ total }} €</td>
+        <td>{{ total|floatformat:2 }} €</td>
         {% endfor %}
         <td></td>
       </tr>

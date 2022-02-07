@@ -87,6 +87,7 @@
             }
         }
     </style>
+    <meta charset="UTF-8">
     </head>
     
     <body>
@@ -133,16 +134,22 @@
     
         <table class="items-table">
 
+            <tr>
+                <th>Description</th>
+                <th>Montant T.T.C (en euros)</th>
+                <th>T.V.A (en euros)</th>
+            </tr>
+
             {% for expense in expenses %}
             <tr>
                 <td> {{ expense.entry.label }} </td>
-                <td class="amount_cell"> {{ expense.amount }} euros</td>
-                <td class="VAT">(Dont TVA : {{ expense.VAT_amount|floatformat:2 }} euros)</td>
+                <td class="amount_cell"> {{ expense.amount|floatformat:2 }}</td>
+                <td class="VAT">{{ expense.VAT_amount|floatformat:2 }}</td>
             </tr>
             {% endfor %}
             <tr class="total_cells">
                 <td>Total à régler</td>
-                <td>{{ total.amount__sum|floatformat:2 }} euros</td>
+                <td>{{ total.amount__sum|floatformat:2 }} euros T.T.C</td>
             </tr>
         </table>
 

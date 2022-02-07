@@ -1,4 +1,5 @@
 # Imports from Django's librairies
+from email.headerregistry import ContentDispositionHeader
 from django.http.response import Http404
 from django.shortcuts import redirect, render
 from django.http import HttpResponse, HttpResponseRedirect
@@ -211,6 +212,7 @@ def editEntry(request, entry_id):
                 for account in accounts:
                     if account.contract == "tenant":
                         subrents_amount = accounts.aggregate(Sum('rent'))
+                        print(subrents_amount)
                         new_distribution = Distribution(
                             entry=entry, account=account, amount=(entry.amount - subrents_amount['rent__sum'])/3)
                         new_distribution.save()
@@ -320,8 +322,8 @@ def send_invoice(request, year, month, accountid):
 
     # Email
     email = EmailMessage(
-        'TEST EMAIL: Facture',
-        'CECI EST UN TEST: Mon cher Confrère,\n\n Vous trouverez ci-joint la facture pour le mois courant.\n\n Je vous prie de me croire,\n\nVotre bien dévoué,\n\nGabriel Vejnar',
+        'Facture',
+        'Mon cher Confrère,\n\n\n Vous trouverez ci-joint la facture pour le mois courant.\n\n Je vous prie de nous croire,\n\nVos bien dévoués,\n\n\nGabriel Vejnar,\n\nGuillaume Antourville,\n\nRomain Ruiz.',
         to=[account.email],
     )
     email.attach('facture.pdf', pdf, 'application/pdf')
