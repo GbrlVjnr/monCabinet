@@ -9,6 +9,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
+from django.core.exceptions import ObjectDoesNotExist
 
 # Woob imports (module used to collect bank data)
 from woob.capabilities.bank.base import AccountNotFound
@@ -106,9 +107,16 @@ def unlogUser(request):
 @login_required
 def index(request):
 
-    last_entry = Entry.objects.latest('date')
+    try: 
+        last_entry = Entry.objects.latest('date')
 
-    return show_month(request, last_entry.date.year, last_entry.date.month)
+        return show_month(request, last_entry.date.year, last_entry.date.month)
+    
+    except ObjectDoesNotExist:
+
+        context = {'errorMessage': "Votre livre-journal est vide."}
+
+        return render(request, 'bookkeeping/index.html', context)
 
 # Return a view that displays the specified month (/YYYY/m/)
 @login_required
@@ -143,16 +151,24 @@ def importBankData(request):
         bank_accounts = list(w.iter_accounts())
         all_transactions = w.iter_history(bank_accounts[0])
 
-        def isNew(transaction):
+        def databaseIsEmpty():
+            if Entry.objects.all().exists():
+                return False
+            else:
+                return True
 
+        def isNew(transaction):
             last_entry = Entry.objects.latest('date')
 
             if transaction.date >= last_entry.date and abs(transaction.amount) != last_entry.amount:
                 return True
             else:
                 return False
-
-        transactions_to_import = filter(isNew, all_transactions)
+            
+        if databaseIsEmpty():
+            transactions_to_import = all_transactions
+        else :
+            transactions_to_import = filter(isNew, all_transactions)
 
         transactions_counter = 0
         for transaction in transactions_to_import:
@@ -173,7 +189,7 @@ def importBankData(request):
     except AccountNotFound:
 
         ErrorMessage = "Les données n'ont pas pu être chargées. Veuillez réessayer."
-        context = {'message': ErrorMessage}
+        context = {'errorMessage': ErrorMessage}
 
     return render(request, 'bookkeeping/import.html', context)
 

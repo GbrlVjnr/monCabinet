@@ -2,7 +2,15 @@
 
 {% block content %} 
 
-{% if entries %}
+{% if errorMessage %}
+
+<h1> {{ errorMessage }} </h1>
+<section>
+  <button type="button">
+    <a class="button-link" href="{% url 'importTransactions' %}">Télécharger les nouvelles données bancaires</a>
+  </button>
+</section>
+{% else %}
 <h2>{{ title }}</h2>
 
 
@@ -171,11 +179,6 @@
     </button>
 </section>
 
-{% else %}
-<h1>Pas de données disponibles.</h1>
-<section>
-  <button type="button">
-    <a class="button-link" href="{% url 'index' %}">Retour</a>
-  </button>
-</section>
-{% endif %} {% endblock %}
+{% endif %} 
+
+{% endblock %}
